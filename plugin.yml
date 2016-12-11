@@ -1,0 +1,6 @@
+main: iieWelcomeKit.Main
+version: 1.0.0
+name: WelcomeKit
+commands:
+  updateGuideBook:
+    description: only iie gets to do this
