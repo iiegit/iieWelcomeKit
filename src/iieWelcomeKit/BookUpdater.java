@@ -7,22 +7,24 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
-import net.minecraft.server.v1_11_R1.IInventory;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-
-public class BookUpdater implements Listener, CommandExecutor
+public class BookUpdater implements Listener, CommandExecutor //too many lines----!
 {
-	//================================STATIC================================
+	private final Main main;
+	BookUpdater(Main main)
+	{
+		this.main = main;
+	}
+	
+	//==========================CHECK IF GUIDEBOOK==========================
 	private static final char[] jujom = "Jujom ".toCharArray();//note the space
 	//----------------------------------------------------------------------
 	private static boolean isJujom(String author)
@@ -35,12 +37,7 @@ public class BookUpdater implements Listener, CommandExecutor
 	}
 	private static boolean authorCheck(BookMeta meta)
 	{
-		return
-					meta.hasAuthor()
-				&&	isJujom
-					(
-							meta.getAuthor()
-							);
+		return meta.hasAuthor() && isJujom(meta.getAuthor());
 	}
 	private static boolean isGuideBook(ItemStack item)
 	{
@@ -52,79 +49,83 @@ public class BookUpdater implements Listener, CommandExecutor
 							(BookMeta) item.getItemMeta()
 							);
 	}
-	private static void configSetPages(Main main, ItemStack item)
+
+	//==========================UPDATE SERVER COPY==========================
+	
+	private void setConfigPages(List<String> pages)
 	{
-		if (item.getType() == Material.WRITTEN_BOOK && item.hasItemMeta())
+		for (int i = 0; i < pages.size(); i++)
 		{
-			List<String> pages = ((BookMeta) item.getItemMeta()).getPages();
-			for (int i = 0; i < pages.size(); i++)
-			{
-				main.getConfig().set
+			main.getConfig().set
+			(
+					"Pages." + String.valueOf(i+1), 
+					pages.get(i)
+					);
+		}
+		main.saveConfig();
+	}
+	private boolean validSourceBook(ItemStack item, Material type)
+	{
+		return
 				(
-						"Pages." + String.valueOf(i+1), 
-						pages.get(i)
-						);
-				Bukkit.getLogger().info("updating page " + (i+1) + ": " + pages.get(i));
-			}
-			main.saveConfig();
-		}
-		else if (!item.hasItemMeta())
-		{
-			Bukkit.getLogger().info("held item has no meta");
-		}
+							type == Material.BOOK_AND_QUILL
+						||	type == Material.WRITTEN_BOOK
+						)
+				&&	item.hasItemMeta();
 	}
-	
-	//===============================INSTANCE===============================
-	private final Main main;
-	//----------------------------------------------------------------------
-	BookUpdater(Main main)
+	private boolean updateServerCopyFromItem(ItemStack item)
 	{
-		this.main = main;
+		if (validSourceBook(item, item.getType()))
+		{	
+			setConfigPages(((BookMeta) item.getItemMeta()).getPages());
+			Book.setPages(main.pageListFromConfig());
+			
+			return true;
+		}
+		return false;
 	}
+	//================================BUKKIT================================
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	
+	//----------------------------BOOK READ EVENT---------------------------
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBookOpen(PlayerInteractEvent event)
 	{
-		if (!event.hasItem() || !isGuideBook(event.getItem()))
+		if (event.hasItem())
 		{
-			return;
+			if (isGuideBook(event.getItem()))
+			{
+				Book.updateHeldBook
+				(
+						(
+								(CraftInventoryPlayer) event.getPlayer().getInventory()
+								)
+						.getInventory()
+						);
+			}
 		}
-		
-		PlayerInventory 	playerInventory 	= event.getPlayer().getInventory();
-		Inventory 			bukkitInventory 	= playerInventory;
-		IInventory 			inventory 			= ((CraftInventory) playerInventory).getInventory();
-		
-		int slot = playerInventory.getHeldItemSlot();
-		NBTTagCompound currentBookNBT = inventory.getItem(slot).save(new NBTTagCompound());
-		
-		
-		bukkitInventory.clear(slot);
-		
-		Bukkit.getLogger().info("updating book");
-		BookWriter.updatePlayerBook
+		else if 
 		(
-				inventory,
-				currentBookNBT,
-				slot
-				);
+					event.getAction() == Action.LEFT_CLICK_BLOCK 
+				&& 	event.getClickedBlock().getType().name().endsWith("_BOX")
+				)
+		{
+			event.getClickedBlock().breakNaturally();
+		}
+		//bare-handed punching a shulker box instantly breaks it;
+		//in here to avoid listening to this event twice
 	}
-	//private static final String iie = "iie";
-	public final boolean onCommand(CommandSender sender, Command label, String command, String[] args) 
+	
+	//--------------------------------COMMAND-------------------------------
+	
+	public boolean onCommand(CommandSender sender, Command label, String command, String[] args) 
 	{
-		if (sender.getName().equals("Iie"))
-		{
-			Bukkit.getLogger().info("Name '" + sender.getName() + "' did not match 'iie'");
-			return false;
-		}
-		configSetPages
-		(
-				main,
-				Bukkit.getPlayer(sender.getName()).getInventory().getItemInMainHand()
-				);
-		BookWriter.setPages
-		(
-				main.pageList()
-				);
-		return true;
+		return
+					sender.getName().equals("iie")
+				&&	updateServerCopyFromItem
+					(
+							Bukkit.getPlayer(sender.getName()).getInventory().getItemInMainHand()
+							);
 	}
 }

@@ -12,10 +12,9 @@ public class Serializers
 {
 	static ItemStack deserialize(String itemStackString)
 	{
-		try 
+		try
 		{
-			return 
-					new ItemStack
+			return new ItemStack
 					(
 							NBTCompressedStreamTools.a
 							(

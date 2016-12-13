@@ -1,3 +1,9 @@
 Pages:
-  1: This is a draft put out by my editor, I'm still writing the thing.\n\n[Editor's note, the pages will update automatically]
-  2: testpage --
+  '1': |-
+    This is a draft put out by my editor, I am still writing the thing.§0
+    §0
+    §0[Editor note - the pages will update automatically]§0
+    §0
+    §0
+    §0...
+  '2': and here is page 2
