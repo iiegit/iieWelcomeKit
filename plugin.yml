@@ -4,3 +4,5 @@ name: WelcomeKit
 commands:
   updateGuideBook:
     description: only iie gets to do this
+  giveWelcomeKit:
+    description: only iie gets to do this, too

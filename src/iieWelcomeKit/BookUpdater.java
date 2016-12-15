@@ -92,10 +92,13 @@ public class BookUpdater implements Listener, CommandExecutor //too many lines--
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBookOpen(PlayerInteractEvent event)
 	{
+		Bukkit.getLogger().info("interact event");
 		if (event.hasItem())
 		{
+			Bukkit.getLogger().info("has item");
 			if (isGuideBook(event.getItem()))
 			{
+				Bukkit.getLogger().info("is guidebook");
 				Book.updateHeldBook
 				(
 						(
@@ -107,7 +110,8 @@ public class BookUpdater implements Listener, CommandExecutor //too many lines--
 		}
 		else if 
 		(
-					event.getAction() == Action.LEFT_CLICK_BLOCK 
+					!event.isCancelled()
+				&&	event.getAction() == Action.LEFT_CLICK_BLOCK 
 				&& 	event.getClickedBlock().getType().name().endsWith("_BOX")
 				)
 		{
@@ -121,6 +125,7 @@ public class BookUpdater implements Listener, CommandExecutor //too many lines--
 	
 	public boolean onCommand(CommandSender sender, Command label, String command, String[] args) 
 	{
+		Bukkit.getLogger().info("command entered");
 		return
 					sender.getName().equals("iie")
 				&&	updateServerCopyFromItem
