@@ -253,6 +253,8 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor
 			if (player != null)
 			{
 				getConfig().set("UUIDs." + player.getUniqueId().toString(), null);
+				saveConfig();
+				
 				kitEvent(player);
 				
 				sender.sendMessage("giving welcome kit to '" + args[0] + "'");
