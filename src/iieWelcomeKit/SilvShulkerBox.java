@@ -26,10 +26,8 @@ public class SilvShulkerBox implements Listener
 	private static NBTTagCompound vanishingCurse()
 	{
 		NBTTagCompound vanishingCurse = new NBTTagCompound();
-		
 		vanishingCurse.set("id", new NBTTagInt(71));
 		vanishingCurse.set("lvl", new NBTTagInt(1));
-		
 		return vanishingCurse;
 	}
 	private static NBTTagList ench()
@@ -57,6 +55,8 @@ public class SilvShulkerBox implements Listener
 						addEnch(box)
 						)
 				);
+		
+		inventory.update();
 	}
 	//----------------------------------------------------------------------
 	@EventHandler

@@ -85,5 +85,7 @@ public class Book
 								)
 						)
 				);
+		
+		inventory.update();
 	}
 }

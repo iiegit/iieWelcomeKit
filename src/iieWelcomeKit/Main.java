@@ -46,13 +46,13 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor
 		boxTag.set("ench", ench());
 		return boxTag;
 	}
-	private static ItemStack box()
+	private static NBTTagCompound box()
 	{
 		NBTTagCompound boxNBT = new NBTTagCompound();
 		boxNBT.set("Count", new NBTTagInt(1));
 		boxNBT.set("id", new NBTTagString("minecraft:silver_shulker_box"));
 		boxNBT.set("tag", boxTag());
-		return new ItemStack(boxNBT);
+		return boxNBT;
 	}
 	
 	
@@ -65,38 +65,43 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor
 		bookTag.set	("generation", new NBTTagInt(2));
 		return bookTag;
 	}
-	private static ItemStack book()
+	private static NBTTagCompound book()
 	{
 		NBTTagCompound bookNBT = new NBTTagCompound();
 		bookNBT.set	("Count", new NBTTagInt(1));
 		bookNBT.set	("id", new NBTTagString("minecraft:written_book"));
 		bookNBT.set	("tag", bookTag());
-		return new ItemStack(bookNBT);
+		return bookNBT;
 	}
 	
 	
-	private static ItemStack boat()
+	private static NBTTagCompound boat()
 	{
 		NBTTagCompound boatNBT = new NBTTagCompound();
 		boatNBT.set	("Count", new NBTTagInt(1));
 		boatNBT.set	("id", new NBTTagString("minecraft:birch_boat"));
-		return new ItemStack(boatNBT);
+		return boatNBT;
 	}
 	
 	
-	private static ItemStack bread()
+	private static NBTTagCompound bread()
 	{
 		NBTTagCompound breadNBT = new NBTTagCompound();
 		breadNBT.set("Count", new NBTTagInt(8));
 		breadNBT.set("id", new NBTTagString("minecraft:bread"));
-		return new ItemStack(breadNBT);
+		return breadNBT;
 	}
 	
 	
-	private static final ItemStack box		= box();		//Serializers.deserialize("H4sIAAAAAAAAADWPwUrEQAyG09Yu3d68eA5zExZZPCgUelFh0RfwoCLTTmzHnc6s08xqWfZ5fA+fzKkg5Cc/JPzJVwIUkGoFZ4O21Hr5xtWn18xkXxvntgnkty5YTkrIWHYZlB1Z8pK1swCQLuGEbNuX0ScpZGZv5j4HbmAJ+U52NBbzELqDoC/2UlRPB8HRikpwr0eMJVHNl3EXGF1UM+EwISnNzq/w/jms15fXA46sjcH5PW075J6iohPHl9V/ojgWsJCBe+fh/CG8u+Fv75FM6waKYa0PI0/ojMKtdc0Kafy4KCBnzYbg9Of7qq43QSvCm4hf1wkUnkZn9qQSSGFxJ4fIFIl+ARctikk6AQAA");
-	private static final ItemStack book 	= book();		//Serializers.deserialize("H4sIAAAAAAAAABXMTQqAIBRG0U+tKNfQSpoWtIyweqWkBvlDy89GZ3DhSqAFNzt6ZzxtjzriEIzN9CxBJ3sV1/tlqMc7+cgkRFRnh4r8piUAxiFstr//ZQY4mkk5dVKpH8ZBXsBeAAAA");
-	private static final ItemStack boat 	= boat();		//Serializers.deserialize("H4sIAAAAAAAAAONiYOBgYMpMYRDJzcxLTS5KTCuxSsosSs6IT8pPLGFkYHXOL80rYWRiYHNJzE1MT2VgYAAAloMkTTMAAAA=");
-	private static final ItemStack bread 	= bread();		//Serializers.deserialize("H4sIAAAAAAAAAONiYOBgYMpMYeDPzcxLTS5KTCuxSipKTUxhZGB1zi/NK+FgYmBzScxNTE9lYGAAAFawFmYuAAAA");
+	private static final String boxCode = "H4sIAAAAAAAAADWPwUrEQAyG09Yu3d68eA5zExZZPCgUelFh0RfwoCLTTmzHnc6s08xqWfZ5fA+fzKkg5Cc/JPzJVwIUkGoFZ4O21Hr5xtWn18xkXxvntgnkty5YTkrIWHYZlB1Z8pK1swCQLuGEbNuX0ScpZGZv5j4HbmAJ+U52NBbzELqDoC/2UlRPB8HRikpwr0eMJVHNl3EXGF1UM+EwISnNzq/w/jms15fXA46sjcH5PW075J6iohPHl9V/ojgWsJCBe+fh/CG8u+Fv75FM6waKYa0PI0/ojMKtdc0Kafy4KCBnzYbg9Of7qq43QSvCm4hf1wkUnkZn9qQSSGFxJ4fIFIl+ARctikk6AQAA";
+	private static final String bookCode = "H4sIAAAAAAAAABXMTQqAIBRG0U+tKNfQSpoWtIyweqWkBvlDy89GZ3DhSqAFNzt6ZzxtjzriEIzN9CxBJ3sV1/tlqMc7+cgkRFRnh4r8piUAxiFstr//ZQY4mkk5dVKpH8ZBXsBeAAAA";
+	private static final String boatCode = "H4sIAAAAAAAAAONiYOBgYMpMYRDJzcxLTS5KTCuxSsosSs6IT8pPLGFkYHXOL80rYWRiYHNJzE1MT2VgYAAAloMkTTMAAAA=";
+	private static final String breadCode = "H4sIAAAAAAAAAONiYOBgYMpMYRDJzcxLTS5KTCuxSsosSs6IT8pPLGFkYHXOL80rYWRiYHNJzE1MT2VgYAAAloMkTTMAAAA=";
+	
+	private static final NBTTagCompound box		= box();
+	private static final NBTTagCompound book 	= book();
+	private static final NBTTagCompound boat 	= boat();
+	private static final NBTTagCompound bread 	= bread();
 	
 	//====================================ENABLE====================================
 	boolean noKitsGivenYet;
@@ -141,10 +146,10 @@ public class Main extends JavaPlugin implements Listener, CommandExecutor
 		}
 		if (empty == 4) 
 		{
-			inventory.setItem(inventory.getFirstEmptySlotIndex(), box);
-			inventory.setItem(inventory.getFirstEmptySlotIndex(), book);
-			inventory.setItem(inventory.getFirstEmptySlotIndex(), boat);
-			inventory.setItem(inventory.getFirstEmptySlotIndex(), bread);
+			inventory.setItem(inventory.getFirstEmptySlotIndex(), new ItemStack(box));
+			inventory.setItem(inventory.getFirstEmptySlotIndex(), new ItemStack(book));
+			inventory.setItem(inventory.getFirstEmptySlotIndex(), new ItemStack(boat));
+			inventory.setItem(inventory.getFirstEmptySlotIndex(), new ItemStack(bread));
 			inventory.update();
 			
 			getConfig().set("UUIDs." + uuid, 1);
